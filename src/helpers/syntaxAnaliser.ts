@@ -3,30 +3,30 @@
 const expression = "(D+,A,F,O,S)+";
 
 interface IToken {
-  tokens: string[];
-  expressionToken: string;
+  lexema: string[];
+  token: string;
 };
 
 const bracketOpener = {
-  tokens: ["("],
-  expressionToken: "A",
+  lexema: ["("],
+  token: "A",
 };
 const bracketCloser = {
-  tokens: [")"],
-  expressionToken: "F",
+  lexema: [")"],
+  token: "F",
 };
 
 const numbers = {
-  tokens: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-  expressionToken: "D",
+  lexema: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  token: "D",
 };
 const operators = {
-  tokens: ["+", "-", "*", "/"],
-  expressionToken: "O",
+  lexema: ["+", "-", "*", "/"],
+  token: "O",
 };
 const spaces = {
-  tokens: [" "],
-  expressionToken: "S",
+  lexema: [" "],
+  token: "S",
 };
 
 const combinedTokens = [
@@ -52,6 +52,6 @@ export function automato(userInput: string, alphabet: string[]) {
     return true;
 }
 
-console.log(examplePassInput, automato(examplePassInput, combinedTokens.map((token) => token.tokens).flat()));
-console.log(exampleFailInput, automato(exampleFailInput, combinedTokens.map((token) => token.tokens).flat()));
+console.log(examplePassInput, automato(examplePassInput, combinedTokens.map((token) => token.lexema).flat()));
+console.log(exampleFailInput, automato(exampleFailInput, combinedTokens.map((token) => token.lexema).flat()));
 // Path: main.ts
