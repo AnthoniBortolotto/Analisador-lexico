@@ -3,7 +3,17 @@ Analisador Léxico para a matéria de Compiladores
 
 ## Getting Started
 
-First, run the development server:
+Rode o comando abaixo para instalar as dependências:
+
+```bash
+npm install
+# or
+yarn
+# or
+pnpm install
+```
+
+Rode o comando abaixo para iniciar o servidor de desenvolvimento:
 
 ```bash
 npm run dev
@@ -13,4 +23,4 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
