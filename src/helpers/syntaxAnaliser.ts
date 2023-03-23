@@ -52,7 +52,7 @@ export function automato(userInput: string, acceptedChars: IChar[]) {
     const table: IChar[] = []; // Tabela de símbolos
     while (inputIndex < inputLength) { // Percorre a string de entrada
         const foundCharacter = acceptedChars.find((char) => char.lexema.includes(userInput[inputIndex])); // Verifica se o caractere atual está nos caracteres aceitos
-        if(!foundCharacter) throw new Error("Lexema inválido encontrado"); // Se não estiver, lança um erro
+        if(!foundCharacter) throw new Error(`Lexema ${userInput[inputIndex]} inválido encontrado na posição ${inputIndex}`); // Se não estiver, lança um erro
         const charInTableIndex = table.findIndex((char) => char.name === foundCharacter.name) // Verifica se o caractere encontrado já está na tabela de símbolos
         if(charInTableIndex !== -1) { // Se estiver, verifica se o lexema já está na tabela
            if(!table[charInTableIndex].lexema.includes(userInput[inputIndex])){ // Checa se o lexema já está na tabela
