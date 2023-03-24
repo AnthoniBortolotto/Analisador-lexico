@@ -6,7 +6,8 @@ interface IChar {
   name: string;
   lexema: string[];
   token: string;
-};
+  regex?: RegExp;
+}
 
 const bracketOpener = {
   name: "Abre parênteses",
@@ -19,7 +20,7 @@ const bracketCloser = {
   token: "F",
 };
 
-const numbers = {
+const digits = {
   name: "Dígitos",
   lexema: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
   token: "D",
@@ -35,39 +36,92 @@ const spaces = {
   token: "S",
 };
 
+const floatNumber = {
+  name: "Número real",
+  lexema: [],
+  token: "R",
+  regex: /\d+\.\d+/,
+};
+
+const point = {
+  name: "Ponto",
+  lexema: ["."],
+  token: "P",
+}
+
 export const combinedTokens = [
   bracketOpener,
   bracketCloser,
-  numbers,
+  digits,
   operators,
   spaces,
+  floatNumber,
+  point
 ];
-
 
 //const alphabet = ["(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", " "]
 
 export function automato(userInput: string, acceptedChars: IChar[]) {
-    let inputLength = userInput.length;
-    let inputIndex = 0;
-    const table: IChar[] = []; // Tabela de símbolos
-    while (inputIndex < inputLength) { // Percorre a string de entrada
-        const foundCharacter = acceptedChars.find((char) => char.lexema.includes(userInput[inputIndex])); // Verifica se o caractere atual está nos caracteres aceitos
-        if(!foundCharacter) throw new Error(`Lexema ${userInput[inputIndex]} inválido encontrado na posição ${inputIndex}`); // Se não estiver, lança um erro
-        const charInTableIndex = table.findIndex((char) => char.name === foundCharacter.name) // Verifica se o caractere encontrado já está na tabela de símbolos
-        if(charInTableIndex !== -1) { // Se estiver, verifica se o lexema já está na tabela
-           if(!table[charInTableIndex].lexema.includes(userInput[inputIndex])){ // Checa se o lexema já está na tabela
-                table[charInTableIndex].lexema.push(userInput[inputIndex]); // Se não, adiciona o lexema na tabela
-           } 
-        }
-        else {
-           table.push({ //Se não, adiciona o caractere encontrado na tabela de símbolos
-                name: foundCharacter.name,
-                lexema: [userInput[inputIndex]],
-                token: foundCharacter.token
-           }); 
-        }
-        inputIndex++; // Incrementa o índice da string de entrada
+  let inputLength = userInput.length;
+  let inputIndex = 0;
+  const table: IChar[] = []; // Tabela de símbolos
+  while (inputIndex < inputLength) { // Percorre a string de entrada
+    const foundCharacter = acceptedChars.find((char) =>
+      char.lexema.includes(userInput[inputIndex])
+    ); // Verifica se o caractere atual está nos caracteres aceitos
+    if (!foundCharacter)
+      throw new Error(
+        `Lexema ${userInput[inputIndex]} inválido encontrado na posição ${inputIndex}`
+      ); // Se não estiver, lança um erro
+    const charInTableIndex = table.findIndex(
+      (char) => char.name === foundCharacter.name
+    ); // Verifica se o caractere encontrado já está na tabela de símbolos
+    if (charInTableIndex !== -1) {
+      // Se estiver, verifica se o lexema já está na tabela
+      if (!table[charInTableIndex].lexema.includes(userInput[inputIndex])) {
+        // Checa se o lexema já está na tabela
+        table[charInTableIndex].lexema.push(userInput[inputIndex]); // Se não, adiciona o lexema na tabela
+      }
+    } else {
+      table.push({
+        //Se não, adiciona o caractere encontrado na tabela de símbolos
+        name: foundCharacter.name,
+        lexema: [userInput[inputIndex]],
+        token: foundCharacter.token,
+      });
     }
-    return table;
-}
+    inputIndex++; // Incrementa o índice da string de entrada
+  }
+  //check regex characters
+  acceptedChars.map((char) => {
+    if (char.regex) {
+      const match = userInput.match(char.regex);
+      if (match) {
+        match.map((matchedSymbol) => {
+          const charInTableIndex = table.findIndex((char) =>
+            char.lexema.find((lexema) => lexema === matchedSymbol)
+          ); // Verifica se o simbolo encontrado já está na tabela de símbolos
+          if (charInTableIndex !== -1) {
+            // Se estiver, verifica se o lexema já está na tabela
+            if (
+              !table[charInTableIndex].lexema.includes(userInput[inputIndex])
+            ) {
+              // Checa se o lexema já está na tabela
+              table[charInTableIndex].lexema.push(userInput[inputIndex]); // Se não, adiciona o lexema na tabela
+            }
+          } else {
+            table.push({
+              //Se não, adiciona o caractere encontrado na tabela de símbolos
+              name: char.name,
+              lexema: [matchedSymbol],
+              token: char.token,
+              regex: char.regex,
+            });
+          }
+        });
+      }
+    }
+  });
 
+  return table;
+}
