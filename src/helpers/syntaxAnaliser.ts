@@ -1,6 +1,6 @@
 //const expression = "(D+O (((SOD+OD+, SOD+)SC), (D+OD+ || D+) ))"
 
-const expression = "(D+,A,F,O,S)+";
+
 
 interface IChar {
   name: string;
@@ -37,10 +37,10 @@ const spaces = {
 };
 
 const floatNumber = {
-  name: "Número real",
+  name: "Números",
   lexema: [],
-  token: "R",
-  regex: /\d+\.\d+/,
+  token: "N",
+  regex: /((\d+\.\d+)|([0-9]+))/g,
 };
 
 const point = {
@@ -48,6 +48,9 @@ const point = {
   lexema: ["."],
   token: "P",
 }
+
+// 12 or 12.3223
+const reg = /((\d+\.\d+)|([0-9]+))/g;
 
 export const combinedTokens = [
   bracketOpener,
@@ -96,20 +99,23 @@ export function automato(userInput: string, acceptedChars: IChar[]) {
   acceptedChars.map((char) => {
     if (char.regex) {
       const match = userInput.match(char.regex);
+      console.log(match);
       if (match) {
         match.map((matchedSymbol) => {
-          const charInTableIndex = table.findIndex((char) =>
-            char.lexema.find((lexema) => lexema === matchedSymbol)
+          const charInTableIndex = table.findIndex((item) =>
+             char.name === item.name
           ); // Verifica se o simbolo encontrado já está na tabela de símbolos
           if (charInTableIndex !== -1) {
+            
             // Se estiver, verifica se o lexema já está na tabela
             if (
-              !table[charInTableIndex].lexema.includes(userInput[inputIndex])
+              !table[charInTableIndex].lexema.includes(matchedSymbol)
             ) {
               // Checa se o lexema já está na tabela
-              table[charInTableIndex].lexema.push(userInput[inputIndex]); // Se não, adiciona o lexema na tabela
+              table[charInTableIndex].lexema.push(matchedSymbol); // Se não, adiciona o lexema na tabela
             }
-          } else {
+          }
+          else {
             table.push({
               //Se não, adiciona o caractere encontrado na tabela de símbolos
               name: char.name,
@@ -117,7 +123,7 @@ export function automato(userInput: string, acceptedChars: IChar[]) {
               token: char.token,
               regex: char.regex,
             });
-          }
+          } 
         });
       }
     }

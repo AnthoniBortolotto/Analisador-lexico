@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <main>
-      <h1>Expressão: {"(D,A,F,O,S,P,R)+"}</h1>
+      <h1>Expressão: {"(D,A,F,O,S,P,N)+"}</h1>
       <h2>Entrada: {"(5 + 2.23) * 4"}</h2>
       <table>
         <thead>
