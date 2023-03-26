@@ -1,38 +1,80 @@
-"use client";
-import { automato, combinedTokens } from "@/helpers/syntaxAnaliser";
-import { useEffect, useState } from "react";
+'use client';
+import { automato, combinedTokens, IChar} from "@/helpers/syntaxAnaliser";
+import { useState } from "react";
+import "./css/style.css";
 
 export default function Home() {
-  const [table, setTable] = useState(automato("(5 + 2.23) * 4", combinedTokens));
+  const [inputString, setInputString] = useState("(4 + 2.23) * 5"); // estado para a string de entrada
+  //usestate de table vazio mas sem erros
+  const [table, setTable] = useState<IChar[]>([]); // estado para a tabela
+  const [defaultString, setDefaultString] = useState("(4 + 2.23) * 5"); // estado para a string de entrada padrão
+  const [showTable, setShowTable] = useState(false); // adicionando um estado para controlar se a tabela deve ser exibida ou não
 
 
+  const handleInputChange = (event: { target: { value: any; }; }) => {
+    const allowedChars = /[\d()+\-*.\s/]/;
+    const inputValue = event.target.value;
+
+    //teste para ver se o valor é permitido em cada posição do input
+
+    if (inputValue.length === 0 || allowedChars.test(inputValue[inputValue.length - 1])) {
+      setInputString(inputValue);
+    } else {
+      // exibir mensagem de erro ou limpar o input
+      setInputString(inputString);
+    }
+
+
+    //se o valor for vazio, a tabela não deve ser exibida
+    if (inputValue === "") {
+      setShowTable(false);
+    }
+ 
+
+
+
+  };
+
+  
+  const handleButtonClick = () => {
+    setTable(automato(inputString, combinedTokens));
+    setDefaultString(inputString);
+    setShowTable(true); // mudando o estado para exibir a tabela
+  };
 
   return (
-    <main>
+    <main className="container">
       <h1>Expressão: {"(D,A,F,O,S,P,N)+"}</h1>
-      <h2>Entrada: {"(5 + 2.23) * 4"}</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>Nome</td>
-            <td>Lexemas</td>
-            <td>Símbolo</td>
-          </tr>
-        </thead>
-        <tbody>
-          {table.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>
-                {item.lexema.map((lex, i) => {
-                  return <span key={i}>{lex} </span>;
-                })}
-              </td>
-              <td>{item.token}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <label htmlFor="inputString">Digite a string de entrada:</label>
+      <input type="text" id="inputString" placeholder="Ex. (4 + 2.23) * 5" value={inputString} onChange={handleInputChange} />
+      <button onClick={handleButtonClick}>Analisar</button>
+      {showTable && (
+        <div className="table-container">
+          <h2>Entrada: {defaultString}</h2>
+          <table className="animated-table">
+            <thead>
+              <tr>
+                <td>Nome</td>
+                <td>Lexemas</td>
+                <td>Símbolo</td>
+              </tr>
+            </thead>
+            <tbody>
+              {table.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.name}</td>
+                  <td>
+                    {item.lexema.map((lex, i) => {
+                      return <span key={i}>{lex} </span>;
+                    })}
+                  </td>
+                  <td>{item.token}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </main>
   );
 }

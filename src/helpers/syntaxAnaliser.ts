@@ -2,7 +2,7 @@
 
 
 
-interface IChar {
+export interface IChar {
   name: string;
   lexema: string[];
   token: string;
@@ -62,6 +62,9 @@ export const combinedTokens = [
   point
 ];
 
+
+
+
 //const alphabet = ["(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", " "]
 
 export function automato(userInput: string, acceptedChars: IChar[]) {
@@ -99,7 +102,7 @@ export function automato(userInput: string, acceptedChars: IChar[]) {
   acceptedChars.map((char) => {
     if (char.regex) {
       const match = userInput.match(char.regex);
-      console.log(match);
+      // console.log(match);
       if (match) {
         match.map((matchedSymbol) => {
           const charInTableIndex = table.findIndex((item) =>
