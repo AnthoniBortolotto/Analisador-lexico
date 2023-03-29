@@ -12,17 +12,9 @@ export default function Home() {
 
 
   const handleInputChange = (event: { target: { value: any; }; }) => {
-    const allowedChars = /[\d()+\-*.\s/]/;
     const inputValue = event.target.value;
 
-    //teste para ver se o valor é permitido em cada posição do input
-
-    if (inputValue.length === 0 || allowedChars.test(inputValue[inputValue.length - 1])) {
-      setInputString(inputValue);
-    } else {
-      // exibir mensagem de erro ou limpar o input
-      setInputString(inputString);
-    }
+     setInputString(inputValue);
 
 
     //se o valor for vazio, a tabela não deve ser exibida
