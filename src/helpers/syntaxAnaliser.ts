@@ -54,7 +54,7 @@ export const combinedTokens = [bracketOpener, bracketCloser, digits, operators, 
 
 //const alphabet = ["(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", " "]
 
-export function automato(userInput: string, acceptedChars: IChar[]): any {
+export function automato(userInput: string, acceptedChars: IChar[]): [IChar[], string[]] {
 	let inputLength = userInput.length;
 	let inputIndex = 0;
 	const errors: string[] = [];
