@@ -9,7 +9,7 @@ export default function Home() {
   const [table, setTable] = useState<IChar[]>([]); // estado para a tabela
   const [defaultString, setDefaultString] = useState("(4 + 2.23) * 5"); // estado para a string de entrada padrão
   const [showTable, setShowTable] = useState(false); // adicionando um estado para controlar se a tabela deve ser exibida ou não
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsgs, setErrorMsgs] = useState<string[]>([])
 
   const handleInputChange = (event: { target: { value: any; }; }) => {
     const inputValue = event.target.value;
@@ -29,16 +29,14 @@ export default function Home() {
 
   
   const handleButtonClick = () => {
-    try{
-      setTable(automato(inputString, combinedTokens));
+    
+      const [tableData, errors] = automato(inputString, combinedTokens)
+      setTable(tableData);
       setDefaultString(inputString);
       setShowTable(true); // mudando o estado para exibir a tabela
-      setErrorMsg("")
-    }
-    catch(err: any){
-      setErrorMsg(err.message)
-      //setShowTable(false)
-    }
+      setErrorMsgs([...errors])
+    
+
   };
 
   return (
@@ -47,7 +45,7 @@ export default function Home() {
       <label htmlFor="inputString">Digite a string de entrada:</label>
       <input type="text" id="inputString" placeholder="Ex. (4 + 2.23) * 5" value={inputString} onChange={handleInputChange} />
       <button onClick={handleButtonClick}>Analisar</button>
-      {errorMsg !== "" && <p className="error">{errorMsg}</p>}
+      {errorMsgs.length > 0 && errorMsgs.map((msg, i) =>  <p key={i} className="error">{msg}</p>)}
       {showTable && (
         <div className="table-container">
           <h2>Entrada: {defaultString}</h2>
